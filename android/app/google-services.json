@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "735772157555",
+    "firebase_url": "https://wall-dock.firebaseio.com",
+    "project_id": "wall-dock",
+    "storage_bucket": "wall-dock.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:735772157555:android:b7735a4ee677c696e06c06",
+        "android_client_info": {
+          "package_name": "com.example.wall_dock"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "735772157555-4cd4me6ctek7h5u3nmmej38av9o42540.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.wall_dock",
+            "certificate_hash": "341663c766b97482c08b306ca3d1136a032f78fa"
+          }
+        },
+        {
+          "client_id": "735772157555-itdg7a2l95q6s4v4nge6pfpihcivtmvb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDT6AB48ubC9gmTK1wRKFNSrdf2Vkgu0b8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "735772157555-itdg7a2l95q6s4v4nge6pfpihcivtmvb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
