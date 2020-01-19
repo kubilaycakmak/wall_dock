@@ -16,7 +16,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String imageUrl = "https://pixabay.com/api/?key=14951209-61b2f6019e4d1a85e007275aa&q=&image_type=photo";
+  String imageUrl = "https://pixabay.com/api/?key=14951209-61b2f6019e4d1a85e007275aa&order=latest";
   var response;
   Future<Map> getPexelsImages() async {
     if(response==null){
