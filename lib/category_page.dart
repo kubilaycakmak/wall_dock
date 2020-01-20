@@ -20,32 +20,51 @@ class _CategoryPageState extends State<CategoryPage> {
       body: Container(
         child: ListView(
           children: <Widget>[
-            _buildListItem("fashion"),
-            _buildListItem("nature"),
-            _buildListItem("backgrounds"),
-            _buildListItem("science"),
-            _buildListItem("education"),
-            _buildListItem("people"),
-            _buildListItem("feelings"),
-            _buildListItem("religion"),
-            _buildListItem("health"),
-            _buildListItem("places"),
-            _buildListItem("animals"),
-            _buildListItem("industry"),
-            _buildListItem("food"),
-            _buildListItem("computer"),
-            _buildListItem("sports"),
-            _buildListItem("transportation"),
-            _buildListItem("travel"),
-            _buildListItem("buildings"),
-            _buildListItem("business"),
-            _buildListItem("music"),
+            _buildListItem("fashion","assets/fashion.jpg"),
+            _buildListItem("nature","assets/nature.jpg"),
+            _buildListItem("backgrounds","assets/background.jpg"),
+            _buildListItem("science","assets/science.jpg"),
+            _buildListItem("education","assets/education.jpg"),
+            _buildListItem("people","assets/people.jpg"),
+            _buildListItem("feelings","assets/feelings.jpg"),
+            _buildListItem("religion","assets/religion.jpg"),
+            _buildListItem("health","assets/health.jpg"),
+            _buildListItem("places","assets/places.jpg"),
+            _buildListItem("animals","assets/animal.jpg"),
+            _buildListItem("industry","assets/industry.jpg"),
+            _buildListItem("food","assets/food.jpg"),
+            _buildListItem("computer","assets/computer.jpg"),
+            _buildListItem("sports","assets/sports.jpg"),
+            _buildListItem("transportation","assets/transportation.jpg"),
+            _buildListItem("travel","assets/travel.jpg"),
+            _buildListItem("buildings","assets/buildings.jpg"),
+            _buildListItem("business","assets/business.jpg"),
+            _buildListItem("music","assets/music.jpg"),
+            // _buildListItem("nature"),
+            // _buildListItem("backgrounds"),
+            // _buildListItem("science"),
+            // _buildListItem("education"),
+            // _buildListItem("people"),
+            // _buildListItem("feelings"),
+            // _buildListItem("religion"),
+            // _buildListItem("health"),
+            // _buildListItem("places"),
+            // _buildListItem("animals"),
+            // _buildListItem("industry"),
+            // _buildListItem("food"),
+            // _buildListItem("computer"),
+            // _buildListItem("sports"),
+            // _buildListItem("transportation"),
+            // _buildListItem("travel"),
+            // _buildListItem("buildings"),
+            // _buildListItem("business"),
+            // _buildListItem("music"),
           ],
         ),
       ),
     );
   }
-  _buildListItem(String type){
+  _buildListItem(String type, String path){
     String imageUrl = "https://pixabay.com/api/?key=14951209-61b2f6019e4d1a85e007275aa&category=$type";
     var response;
     Future<Map> getPexelsImages() async {
@@ -57,40 +76,40 @@ class _CategoryPageState extends State<CategoryPage> {
       }
     }
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 3),
       child: Stack(
         children: <Widget>[
+          // FutureBuilder(
+          //   future: getPexelsImages(),
+          //   builder: (context, snapshot){
+          //     Map data = snapshot.data;
+          //     if(snapshot.hasError){
+          //       print(snapshot.error);
+          //       return Text('has error while response from server',
+          //         style: TextStyle(color: Colors.white),
+          //       );
+          //     }else if(snapshot.hasData){
+          //       return 
+          //     }else if(!snapshot.hasData){
+          //       return Center(child: CircularProgressIndicator(),);
+          //     }
+          //   },
+          // ),
+          
           Container(
-            height: 200.0,
-          ),
-          FutureBuilder(
-            future: getPexelsImages(),
-            builder: (context, snapshot){
-              Map data = snapshot.data;
-              if(snapshot.hasError){
-                print(snapshot.error);
-                return Text('has error while response from server',
-                  style: TextStyle(color: Colors.white),
-                );
-              }else if(snapshot.hasData){
-                return Container(
-                  height: 200.0,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10.0),
-                    image: DecorationImage(
-                      image: NetworkImage("${data['hits'][1]['webformatURL']}"),
-                      fit: BoxFit.cover,
-                      colorFilter: ColorFilter.mode(Colors.black87, BlendMode.dstATop)
-                    )
-                  ),
-                );
-              }else if(!snapshot.hasData){
-                return Center(child: CircularProgressIndicator(),);
-              }
-            },
+            height: 150.0,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10.0),
+              image: DecorationImage(
+                image: AssetImage(path),
+                // NetworkImage("${data['hits'][3]['webformatURL']}"),
+                fit: BoxFit.cover,
+                colorFilter: ColorFilter.mode(Colors.black26, BlendMode.darken)
+              )
+            ),
           ),
           Container(
-            height: 200.0,
+            height: 150.0,
             child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
