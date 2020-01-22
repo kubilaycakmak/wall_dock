@@ -1,12 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:wall_dock/full_screen.dart';
-
 import 'style/color.dart';
+
+const String testDevice = '';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key}) : super(key: key);
@@ -16,6 +18,16 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  static final MobileAdTargetingInfo targetingInfo = new MobileAdTargetingInfo(
+    testDevices: <String>[],
+    //testDevice != null ? <String>[testDevice] : null,
+    keywords: <String>['wallpapers', 'walls', 'amoled'],
+    childDirected: true,
+  );
+
+  BannerAd _bannerAd;
+  InterstitialAd _interstitialAd;
+
   static int pageNumber = 1;
   String imageUrl =
       "https://pixabay.com/api/?key=14951209-61b2f6019e4d1a85e007275aa&order=latest&page=$pageNumber";
@@ -27,6 +39,42 @@ class _HomePageState extends State<HomePage> {
     if (response.statusCode == 200) {
       return json.decode(response.body);
     }
+  }
+
+  BannerAd createBannerAd() {
+    return new BannerAd(
+        adUnitId: "ca-app-pub-9287966150990663/2963995877",
+        size: AdSize.banner,
+        targetingInfo: targetingInfo,
+        listener: (MobileAdEvent event) {
+          print("Banner event :  + $event");
+        });
+  }
+
+  InterstitialAd createInterStitialAd() {
+    return new InterstitialAd(
+        adUnitId: InterstitialAd.testAdUnitId,
+        //"ca-app-pub-9287966150990663/9828787128",
+        targetingInfo: targetingInfo,
+        listener: (MobileAdEvent event) {
+          print("Interstitial event :  + $event");
+        });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    FirebaseAdMob.instance.initialize(appId: FirebaseAdMob.testAppId);
+    // _bannerAd = createBannerAd()
+    //   ..load()
+    //   ..show(anchorType: AnchorType.bottom, anchorOffset: 58.0);
+  }
+
+  @override
+  void dispose() {
+    _bannerAd?.dispose();
+    _interstitialAd?.dispose();
+    super.dispose();
   }
 
   @override
@@ -57,11 +105,16 @@ class _HomePageState extends State<HomePage> {
                       elevation: 8.0,
                       borderRadius: BorderRadius.all(Radius.circular(8.0)),
                       child: InkWell(
-                        onTap: () => Navigator.push(
-                            context,
-                            new MaterialPageRoute(
-                                builder: (context) => new FullScreenImage(
-                                    "${data['hits'][index]['largeImageURL']}"))),
+                        onTap: () {
+                          createInterStitialAd()
+                            ..load()
+                            ..show();
+                          Navigator.push(
+                              context,
+                              new MaterialPageRoute(
+                                  builder: (context) => new FullScreenImage(
+                                      "${data['hits'][index]['largeImageURL']}")));
+                        },
                         child: Hero(
                           tag: "${data['hits'][index]['largeImageURL']}",
                           child: Padding(
@@ -79,8 +132,7 @@ class _HomePageState extends State<HomePage> {
                                     image: NetworkImage(
                                         "${data['hits'][index]['webformatURL']}"),
                                     fit: BoxFit.cover,
-                                    placeholder:
-                                        AssetImage("assets/wallLogo.png"),
+                                    placeholder: AssetImage("assets/wall.gif"),
                                   ),
                                 ),
                                 Container(

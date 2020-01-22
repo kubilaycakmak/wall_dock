@@ -88,8 +88,7 @@ class _DetailPageState extends State<DetailPage> {
                                     image: NetworkImage(
                                         "${data['hits'][index]['largeImageURL']}"),
                                     fit: BoxFit.cover,
-                                    placeholder:
-                                        AssetImage("assets/wallLogo.png"),
+                                    placeholder: AssetImage("assets/wall.gif"),
                                   ),
                                 ),
                                 Container(
