@@ -1,40 +1,49 @@
-import 'dart:async';
 import 'dart:convert';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:wall_dock/full_screen.dart';
-
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:wall_dock/style/text.dart';
+import 'full_screen.dart';
 import 'style/color.dart';
 
-class HomePage extends StatefulWidget {
-  HomePage({Key key}) : super(key: key);
+class DetailPage extends StatefulWidget {
+  final String dataCategory;
+  DetailPage({this.dataCategory});
 
   @override
-  _HomePageState createState() => _HomePageState();
+  _DetailPageState createState() => _DetailPageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  static int pageNumber = 1;
-  String imageUrl =
-      "https://pixabay.com/api/?key=14951209-61b2f6019e4d1a85e007275aa&order=latest&page=$pageNumber";
+class _DetailPageState extends State<DetailPage> {
   var response;
-  Future<Map> getPexelsImages() async {
-    if (response == null) {
-      response = await http.get(Uri.encodeFull(imageUrl));
-    }
-    if (response.statusCode == 200) {
-      return json.decode(response.body);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
+    String imageUrl =
+        "https://pixabay.com/api/?key=14951209-61b2f6019e4d1a85e007275aa&category=${widget.dataCategory}";
+    Future<Map> getCategoriedImages() async {
+      if (response == null) {
+        response = await http.get(Uri.encodeFull(imageUrl));
+      }
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      }
+    }
+
+    print(widget.dataCategory);
     return Scaffold(
+        appBar: AppBar(
+          title: Text(
+            '${widget.dataCategory}',
+            style: titleStyle,
+          ),
+          centerTitle: true,
+          backgroundColor: colorDark,
+        ),
         backgroundColor: colorDark,
         body: FutureBuilder(
-          future: getPexelsImages(),
+          future: getCategoriedImages(),
           builder: (context, snapshot) {
             Map data = snapshot.data;
             if (snapshot.hasError) {
@@ -77,7 +86,7 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                   child: FadeInImage(
                                     image: NetworkImage(
-                                        "${data['hits'][index]['webformatURL']}"),
+                                        "${data['hits'][index]['largeImageURL']}"),
                                     fit: BoxFit.cover,
                                     placeholder:
                                         AssetImage("assets/wallLogo.png"),

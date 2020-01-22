@@ -54,7 +54,20 @@ flutter:
    - assets/fashion.jpg
    - assets/science.jpg
    - assets/nature.jpg
-
+   - assets/buildings.jpg
+   - assets/business.jpg
+   - assets/computer.jpg
+   - assets/factory.jpg
+   - assets/feel.jpg
+   - assets/food.jpg
+   - assets/health.jpg
+   - assets/music.jpg
+   - assets/people.jpg
+   - assets/regions.jpg
+   - assets/sports.jpg
+   - assets/transportation.jpg
+   - assets/travel.jpg
+   - assets/places.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
