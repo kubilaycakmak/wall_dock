@@ -24,17 +24,18 @@ class _HomePageState extends State<HomePage> {
     keywords: <String>['wallpapers', 'walls', 'amoled'],
     childDirected: true,
   );
-
+  int _counter = 0;
   BannerAd _bannerAd;
+  bool isLoading = false;
   InterstitialAd _interstitialAd;
-
-  static int pageNumber = 1;
-  String imageUrl =
-      "https://pixabay.com/api/?key=14951209-61b2f6019e4d1a85e007275aa&order=latest&page=$pageNumber";
+  int pageNumber = 1;
+  ScrollController _scrollController = new ScrollController();
+  int per_page = 20;
   var response;
-  Future<Map> getPexelsImages() async {
+  Future<Map> getPexelsImages(int pageNumber) async {
     if (response == null) {
-      response = await http.get(Uri.encodeFull(imageUrl));
+      response = await http.get(Uri.encodeFull(
+          "https://pixabay.com/api/?key=14951209-61b2f6019e4d1a85e007275aa&order=latest&page=$pageNumber"));
     }
     if (response.statusCode == 200) {
       return json.decode(response.body);
@@ -53,8 +54,9 @@ class _HomePageState extends State<HomePage> {
 
   InterstitialAd createInterStitialAd() {
     return new InterstitialAd(
-        adUnitId: InterstitialAd.testAdUnitId,
-        //"ca-app-pub-9287966150990663/9828787128",
+        adUnitId:
+            //InterstitialAd.testAdUnitId,
+            "ca-app-pub-9287966150990663/9828787128",
         targetingInfo: targetingInfo,
         listener: (MobileAdEvent event) {
           print("Interstitial event :  + $event");
@@ -65,9 +67,20 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     FirebaseAdMob.instance.initialize(appId: FirebaseAdMob.testAppId);
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        _scrollController.position.setPixels(0);
+        setState(() {
+          pageNumber++;
+          response = null;
+          getPexelsImages(pageNumber);
+        });
+      }
+    });
     // _bannerAd = createBannerAd()
     //   ..load()
-    //   ..show(anchorType: AnchorType.bottom, anchorOffset: 58.0);
+    //   ..show(anchorType: AnchorType.bottom, anchorOffset: 56.0);
   }
 
   @override
@@ -82,7 +95,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
         backgroundColor: colorDark,
         body: FutureBuilder(
-          future: getPexelsImages(),
+          future: getPexelsImages(pageNumber),
           builder: (context, snapshot) {
             Map data = snapshot.data;
             if (snapshot.hasError) {
@@ -93,22 +106,27 @@ class _HomePageState extends State<HomePage> {
               );
             } else if (snapshot.hasData) {
               return StaggeredGridView.countBuilder(
+                controller: _scrollController,
                 mainAxisSpacing: 8.0,
                 crossAxisSpacing: 8.0,
                 staggeredTileBuilder: (index) =>
                     StaggeredTile.count(2, index.isEven ? 2 : 3),
                 padding: EdgeInsets.all(8.0),
                 crossAxisCount: 4,
-                itemCount: 19,
+                itemCount: data.length * 5,
                 itemBuilder: (context, index) {
                   return Material(
                       elevation: 8.0,
                       borderRadius: BorderRadius.all(Radius.circular(8.0)),
                       child: InkWell(
                         onTap: () {
-                          createInterStitialAd()
-                            ..load()
-                            ..show();
+                          // _counter++;
+                          // print(_counter);
+                          // if (_counter % 1 == 0) {
+                          //   createInterStitialAd()
+                          //     ..load()
+                          //     ..show();
+                          // }
                           Navigator.push(
                               context,
                               new MaterialPageRoute(

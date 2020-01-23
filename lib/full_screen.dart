@@ -5,14 +5,12 @@ class FullScreenImage extends StatelessWidget {
   String imgPath;
   FullScreenImage(this.imgPath);
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: colorDark,
       body: new SizedBox.expand(
         child: Container(
-          
           child: Stack(
             children: <Widget>[
               new Align(
@@ -33,9 +31,14 @@ class FullScreenImage extends StatelessWidget {
                       backgroundColor: Colors.transparent,
                       actions: <Widget>[
                         IconButton(
-                          icon: Icon(Icons.close, color: Colors.white,),
-                          onPressed: ()=>Navigator.of(context).pop(),
-                      ),
+                          icon: Icon(
+                            Icons.close,
+                            color: Colors.white,
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
                       ],
                     )
                   ],
