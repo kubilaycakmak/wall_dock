@@ -29,15 +29,16 @@ class _HomePageState extends State<HomePage> {
   BannerAd _bannerAd;
   bool isLoading = false;
   InterstitialAd _interstitialAd;
-  int pageNumber = 1;
+  int page_number = 1;
   ScrollController _scrollController = new ScrollController();
   int per_page = 20;
   ImageModel imageModel;
   var response;
-  Future<Map> getPexelsImages(int pageNumber) async {
+  Future<Map> getPexelsImages(int perPage, int pageNumer) async {
     if (response == null) {
       response = await http.get(Uri.encodeFull(
-          "https://pixabay.com/api/?key=14951209-61b2f6019e4d1a85e007275aa&order=latest&page=$pageNumber"));
+          "https://pixabay.com/api/?key=14951209-61b2f6019e4d1a85e007275aa"+
+          "&order=latest&page=$pageNumer&per_page=$perPage"));
     }
     if (response.statusCode == 200) {
       var image = json.decode(response.body);
@@ -71,17 +72,18 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     FirebaseAdMob.instance.initialize(appId: FirebaseAdMob.testAppId);
-    // _scrollController.addListener(() {
-    //   if (_scrollController.position.pixels ==
-    //       _scrollController.position.maxScrollExtent) {
-    //     _scrollController.position.setPixels(0);
-    //     setState(() {
-          // pageNumber++;
-          // response = null;
-          // getPexelsImages(pageNumber);
-        // });
-    //   }
-    // });
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        setState(() {
+          response = null;
+          per_page += 20;
+          if(per_page == 200){
+            page_number++;
+          }
+        });
+      }
+    });
     // _bannerAd = createBannerAd()
     //   ..load()
     //   ..show(anchorType: AnchorType.bottom, anchorOffset: 56.0);
@@ -99,7 +101,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
         backgroundColor: colorDark,
         body: FutureBuilder(
-          future: getPexelsImages(pageNumber),
+          future: getPexelsImages(per_page, page_number),
           builder: (context, snapshot) {
             Map data = snapshot.data;
             if (snapshot.hasError) {
