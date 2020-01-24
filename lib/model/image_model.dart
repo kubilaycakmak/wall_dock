@@ -14,9 +14,9 @@ class ImageModel{
 
 class Hits{
 
-  Hits({this.largeUrl, this.webUrl, this.user, this.likes, this.id});
-  final String largeUrl, user, webUrl;
-  final int likes, id;
+  Hits({this.largeUrl, this.type, this.webUrl, this.user, this.imageWidth, this.imageHeight, this.likes, this.id, this.download, this.view, this.size});
+  final String largeUrl, user, webUrl, type;
+  final int likes, id, download, view, size, imageWidth, imageHeight;
 
   factory Hits.fromJson(Map<String, dynamic> value){
     return Hits(
@@ -24,7 +24,13 @@ class Hits{
       webUrl: value['webformatURL'],
       user: value['user'],
       likes: value['likes'],
-      id: value['id']
+      id: value['id'],
+      download: value['downloads'],
+      view: value['views'],
+      size: value['imageSize'],
+      type: value['type'],
+      imageWidth: value['imageWidth'],
+      imageHeight: value['imageHeight']
     );
   }
 }

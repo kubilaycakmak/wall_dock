@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:wall_dock/style/text.dart';
 import 'full_screen.dart';
+import 'model/api_call.dart';
 import 'style/color.dart';
 
 class DetailPage extends StatefulWidget {
@@ -70,7 +71,15 @@ class _DetailPageState extends State<DetailPage> {
                             context,
                             new MaterialPageRoute(
                                 builder: (context) => new FullScreenImage(
-                                    "${data['hits'][index]['largeImageURL']}"))),
+                                      imageModel.hits[index].largeUrl,
+                                      imageModel.hits[index].user,
+                                      imageModel.hits[index].likes,
+                                      imageModel.hits[index].id,
+                                      imageModel.hits[index].download,
+                                      imageModel.hits[index].view,
+                                      imageModel.hits[index].size,
+                                      imageModel.hits[index].imageWidth,
+                                      imageModel.hits[index].imageHeight))),
                         child: Hero(
                           tag: "${data['hits'][index]['largeImageURL']}",
                           child: Padding(

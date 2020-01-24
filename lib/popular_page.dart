@@ -83,7 +83,15 @@ ScrollController _scrollController = new ScrollController();
                             context,
                             new MaterialPageRoute(
                                 builder: (context) => new FullScreenImage(
-                                    imageModel.hits[index].largeUrl))),
+                                      imageModel.hits[index].largeUrl,
+                                      imageModel.hits[index].user,
+                                      imageModel.hits[index].likes,
+                                      imageModel.hits[index].id,
+                                      imageModel.hits[index].download,
+                                      imageModel.hits[index].view,
+                                      imageModel.hits[index].size,
+                                      imageModel.hits[index].imageWidth,
+                                      imageModel.hits[index].imageHeight))),
                         child: Hero(
                           tag: imageModel.hits[index].largeUrl,
                           child: Padding(
