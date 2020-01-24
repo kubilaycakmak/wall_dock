@@ -1,12 +1,10 @@
-import 'dart:async';
-import 'dart:convert';
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:wall_dock/full_screen.dart';
 import 'package:wall_dock/model/image_model.dart';
+import 'model/api_call.dart';
 import 'style/color.dart';
 
 const String testDevice = '';
@@ -17,7 +15,6 @@ class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
 }
-
 class _HomePageState extends State<HomePage> {
   static final MobileAdTargetingInfo targetingInfo = new MobileAdTargetingInfo(
     testDevices: <String>[],
@@ -27,25 +24,11 @@ class _HomePageState extends State<HomePage> {
   );
   int _counter = 0;
   BannerAd _bannerAd;
-  bool isLoading = false;
   InterstitialAd _interstitialAd;
-  int page_number = 1;
   ScrollController _scrollController = new ScrollController();
   int per_page = 20;
-  ImageModel imageModel;
   var response;
-  Future<Map> getPexelsImages(int perPage, int pageNumer) async {
-    if (response == null) {
-      response = await http.get(Uri.encodeFull(
-          "https://pixabay.com/api/?key=14951209-61b2f6019e4d1a85e007275aa"+
-          "&order=latest&page=$pageNumer&per_page=$perPage"));
-    }
-    if (response.statusCode == 200) {
-      var image = json.decode(response.body);
-      imageModel = new ImageModel.fromJson(image);
-      return json.decode(response.body);
-    }
-  }
+  int page_number = 1;
 
   BannerAd createBannerAd() {
     return new BannerAd(
@@ -101,9 +84,8 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
         backgroundColor: colorDark,
         body: FutureBuilder(
-          future: getPexelsImages(per_page, page_number),
+          future: getPexelsImages(per_page, page_number, response, 'latest'),
           builder: (context, snapshot) {
-            Map data = snapshot.data;
             if (snapshot.hasError) {
               print(snapshot.error);
               return Text(
@@ -185,6 +167,46 @@ class _HomePageState extends State<HomePage> {
                                               textStyle: TextStyle(
                                                   color: Colors.white)),
                                         ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      gradient: LinearGradient(
+                                          begin: FractionalOffset.bottomCenter,
+                                          end: FractionalOffset.topCenter,
+                                          colors: [
+                                            Colors.grey.withOpacity(0.0),
+                                            Colors.black87,
+                                          ],
+                                          stops: [
+                                            0.0,
+                                            1.0
+                                          ])),
+                                  child: Center(
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                                      children: <Widget>[
+                                        Text(
+                                          '♥ ' +
+                                              imageModel.hits[index].likes.toString(),
+                                          style: GoogleFonts.montserrat(
+                                              fontSize: 15,
+                                              textStyle: TextStyle(
+                                                  color: Colors.white)),
+                                        ),
+                                        IconButton(
+                                          alignment: Alignment.topCenter,
+                                          color: Colors.red,
+                                          icon: Icon(favIconBorder, size: 30,),
+                                          onPressed: (){
+                                            setState(() {
+                                              favIconBorder=favIconFill;
+                                            });
+                                          }),
                                       ],
                                     ),
                                   ),

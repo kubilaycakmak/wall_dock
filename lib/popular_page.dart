@@ -7,38 +7,58 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'full_screen.dart';
+import 'model/api_call.dart';
 import 'style/color.dart';
 
-class RandomPage extends StatefulWidget {
-  RandomPage({Key key}) : super(key: key);
+class PopularPage extends StatefulWidget {
+  PopularPage({Key key}) : super(key: key);
 
   @override
-  _RandomPageState createState() => _RandomPageState();
+  _PopularPageState createState() => _PopularPageState();
 }
 
-class _RandomPageState extends State<RandomPage> {
-  Random random = new Random();
-  String imageUrl =
-      "https://pixabay.com/api/?key=14951209-61b2f6019e4d1a85e007275&page=3";
+class _PopularPageState extends State<PopularPage> {
+var response;
+int page_number = 1;
+int per_page = 20;
+ScrollController _scrollController = new ScrollController();
 
-  var response;
-  Future<Map> getPexelsImages() async {
-    if (response == null) {
-      response = await http.get(Uri.encodeFull(imageUrl));
-    }
-    if (response.statusCode == 200) {
-      return json.decode(response.body);
-    }
+  @override
+  void initState() {
+    super.initState();
+    //FirebaseAdMob.instance.initialize(appId: FirebaseAdMob.testAppId);
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        setState(() {
+          response = null;
+          per_page += 20;
+          if(per_page == 200){
+            page_number++;
+          }
+        });
+      }
+    });
+    // _bannerAd = createBannerAd()
+    //   ..load()
+    //   ..show(anchorType: AnchorType.bottom, anchorOffset: 56.0);
   }
+
+  @override
+  void dispose() {
+    // _bannerAd?.dispose();
+    // _interstitialAd?.dispose();
+    super.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: colorDark,
         body: FutureBuilder(
-          future: getPexelsImages(),
+          future: getPexelsImages(per_page,page_number,response,'popular'),
           builder: (context, snapshot) {
-            Map data = snapshot.data;
             if (snapshot.hasError) {
               print(snapshot.error);
               return Text(
@@ -63,9 +83,9 @@ class _RandomPageState extends State<RandomPage> {
                             context,
                             new MaterialPageRoute(
                                 builder: (context) => new FullScreenImage(
-                                    "${data['hits'][index]['largeImageURL']}"))),
+                                    imageModel.hits[index].largeUrl))),
                         child: Hero(
-                          tag: "${data['hits'][index]['largeImageURL']}",
+                          tag: imageModel.hits[index].largeUrl,
                           child: Padding(
                             padding: EdgeInsets.symmetric(
                                 horizontal: 0, vertical: 0),
@@ -79,7 +99,7 @@ class _RandomPageState extends State<RandomPage> {
                                   ),
                                   child: FadeInImage(
                                     image: NetworkImage(
-                                        "${data['hits'][index]['largeImageURL']}"),
+                                        imageModel.hits[index].webUrl),
                                     fit: BoxFit.cover,
                                     placeholder: AssetImage("assets/wall.gif"),
                                   ),
@@ -104,7 +124,7 @@ class _RandomPageState extends State<RandomPage> {
                                       children: <Widget>[
                                         Text(
                                           '@' +
-                                              '${data['hits'][index]['user']}',
+                                              imageModel.hits[index].user,
                                           style: GoogleFonts.montserrat(
                                               fontSize: 15,
                                               textStyle: TextStyle(

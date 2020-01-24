@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:wall_dock/category_page.dart';
 import 'package:wall_dock/favorite_page.dart';
-import 'package:wall_dock/random_page.dart';
 import 'package:wall_dock/style/text.dart';
 import 'home_page.dart';
+import 'popular_page.dart';
 import 'style/color.dart';
 
 class Home extends StatefulWidget {
@@ -20,7 +20,7 @@ class _HomeState extends State<Home> {
     List children = [
       HomePage(),
       CategoryPage(),
-      RandomPage(),
+      PopularPage(),
       FavoritePage()
     ];
 
@@ -29,9 +29,9 @@ class _HomeState extends State<Home> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: colorDark,
-        title: selectedItem == 0 ? Text("Lastest",style: GoogleFonts.montserrat(textStyle: titleStyle),) 
+        title: selectedItem == 0 ? Text("Latest",style: GoogleFonts.montserrat(textStyle: titleStyle),) 
         : selectedItem == 1 ? Text("Categories",style: GoogleFonts.montserrat(textStyle: titleStyle),) 
-        : selectedItem == 2 ? Text('Randomly',style: GoogleFonts.montserrat(textStyle: titleStyle),) 
+        : selectedItem == 2 ? Text('Popular',style: GoogleFonts.montserrat(textStyle: titleStyle),) 
         : selectedItem == 3 ? Text('My Favorites',style: GoogleFonts.montserrat(textStyle: titleStyle),) 
         : Text(''),
         //title: Text('Wall Dock', style: GoogleFonts.montserrat(textStyle: titleStyle),),
