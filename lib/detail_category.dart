@@ -15,13 +15,13 @@ class DetailPage extends StatefulWidget {
 }
 
 class _DetailPageState extends State<DetailPage> {
-  var response;
   int page_number = 1, per_page = 20;
   ScrollController _scrollController = new ScrollController();
 
   @override
   void initState() {
     super.initState();
+    response = null;
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
@@ -53,8 +53,8 @@ class _DetailPageState extends State<DetailPage> {
           backgroundColor: colorDark,
         ),
         body: FutureBuilder(
-          future: getPexelsImages(
-              per_page, page_number, 'latest', widget.dataCategory),
+          future: getPexelsLatestImages(
+              per_page, page_number, widget.dataCategory),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               print(snapshot.error);

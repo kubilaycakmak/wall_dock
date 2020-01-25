@@ -1,14 +1,12 @@
-import 'dart:convert';
-import 'dart:math';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import 'full_screen.dart';
 import 'model/api_call.dart';
+import 'model/api_call.dart';
 import 'style/color.dart';
+import 'style/text.dart';
 
 class PopularPage extends StatefulWidget {
   PopularPage({Key key}) : super(key: key);
@@ -21,10 +19,12 @@ class _PopularPageState extends State<PopularPage> {
   int page_number = 1;
   int per_page = 20;
   ScrollController _scrollController = new ScrollController();
+  ScrollController _scrollControllerGrid = new ScrollController();
 
   @override
   void initState() {
     super.initState();
+    response = null;
     //FirebaseAdMob.instance.initialize(appId: FirebaseAdMob.testAppId);
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
@@ -53,9 +53,9 @@ class _PopularPageState extends State<PopularPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: colorDark,
+        backgroundColor: colorGrayTransparent,
         body: FutureBuilder(
-          future: getPexelsImages(per_page, page_number, 'popular', null),
+          future: getPexelsPopularImages(per_page, page_number, null),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               print(snapshot.error);
@@ -64,34 +64,56 @@ class _PopularPageState extends State<PopularPage> {
                 style: TextStyle(color: Colors.white),
               );
             } else if (snapshot.hasData) {
-              return StaggeredGridView.countBuilder(
+              return ListView(
+                shrinkWrap: false,
+                scrollDirection: Axis.vertical,
+                physics: AlwaysScrollableScrollPhysics(),
                 controller: _scrollController,
-                mainAxisSpacing: 8.0,
-                crossAxisSpacing: 8.0,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(top: 30, left: 15),
+                    child: Text('Popular', style: titleStyle,),
+                  ),
+                  StaggeredGridView.countBuilder(
+                shrinkWrap: true,
+                controller: _scrollControllerGrid,
+                mainAxisSpacing: 0.5,
+                crossAxisSpacing: 0.5,
                 staggeredTileBuilder: (index) =>
                     StaggeredTile.count(2, index.isEven ? 2 : 3),
-                padding: EdgeInsets.all(8.0),
+                padding: EdgeInsets.only(top: 30, left: 0, right: 0),
                 crossAxisCount: 4,
                 itemCount: imageModel.hits.length,
                 itemBuilder: (context, index) {
                   return Material(
-                      elevation: 8.0,
-                      borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                      elevation: 5,
+                      shadowColor: colorDark,
+                      type: MaterialType.transparency,
+                      color: colorGrayTransparent,
                       child: InkWell(
-                        onTap: () => Navigator.push(
-                            context,
-                            new MaterialPageRoute(
-                                builder: (context) => new FullScreenImage(
-                                    imageModel.hits[index].largeUrl,
-                                    imageModel.hits[index].user,
-                                    imageModel.hits[index].likes,
-                                    imageModel.hits[index].id,
-                                    imageModel.hits[index].download,
-                                    imageModel.hits[index].view,
-                                    imageModel.hits[index].size,
-                                    imageModel.hits[index].iwidth,
-                                    imageModel.hits[index].iheight,
-                                    imageModel.hits[index].comments))),
+                        onTap: () {
+                          // _counter++;
+                          // print(_counter);
+                          // if (_counter % 1 == 0) {
+                          //   createInterStitialAd()
+                          //     ..load()
+                          //     ..show();
+                          // }
+                          Navigator.push(
+                              context,
+                              new MaterialPageRoute(
+                                  builder: (context) => new FullScreenImage(
+                                      imageModel.hits[index].largeUrl,
+                                      imageModel.hits[index].user,
+                                      imageModel.hits[index].likes,
+                                      imageModel.hits[index].id,
+                                      imageModel.hits[index].download,
+                                      imageModel.hits[index].view,
+                                      imageModel.hits[index].size,
+                                      imageModel.hits[index].iwidth,
+                                      imageModel.hits[index].iheight,
+                                      imageModel.hits[index].comments)));
+                        },
                         child: Hero(
                           tag: imageModel.hits[index].largeUrl,
                           child: Padding(
@@ -101,15 +123,11 @@ class _PopularPageState extends State<PopularPage> {
                               children: <Widget>[
                                 Container(
                                   height: 300.0,
-                                  width: 300,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(0.0),
-                                  ),
-                                  child: FadeInImage(
+                                  width: 300.0,
+                                  child: Image(
                                     image: NetworkImage(
                                         imageModel.hits[index].webUrl),
                                     fit: BoxFit.cover,
-                                    placeholder: AssetImage("assets/wall.gif"),
                                   ),
                                 ),
                                 Container(
@@ -127,26 +145,74 @@ class _PopularPageState extends State<PopularPage> {
                                             1.0
                                           ])),
                                   child: Center(
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: <Widget>[
-                                        Text(
-                                          '@' + imageModel.hits[index].user,
-                                          style: GoogleFonts.montserrat(
-                                              fontSize: 15,
-                                              textStyle: TextStyle(
-                                                  color: Colors.white)),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                )
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: <Widget>[
+                                          Text(
+                                            '@' + imageModel.hits[index].user,
+                                            style: GoogleFonts.dancingScript(
+                                                fontSize: 15,
+                                                textStyle: TextStyle(
+                                                    color: Colors.white)),
+                                          ),
+                                        ],
+                                      ),
+                                      ),
+                                ),
+                                // Container(
+                                //   decoration: BoxDecoration(
+                                //       color: Colors.white,
+                                //       gradient: LinearGradient(
+                                //           begin: FractionalOffset.bottomCenter,
+                                //           end: FractionalOffset.topCenter,
+                                //           colors: [
+                                //             Colors.grey.withOpacity(0.0),
+                                //             Colors.black87,
+                                //           ],
+                                //           stops: [
+                                //             0.8,
+                                //             1.0
+                                //           ])),
+                                //   child: Center(
+                                //     child: Row(
+                                //       mainAxisAlignment:
+                                //           MainAxisAlignment.spaceBetween,
+                                //       crossAxisAlignment:
+                                //           CrossAxisAlignment.stretch,
+                                //       children: <Widget>[
+                                //         Text(
+                                //           '♥ ' +
+                                //               imageModel.hits[index].likes
+                                //                   .toString(),
+                                //           style: GoogleFonts.montserrat(
+                                //               fontSize: 15,
+                                //               textStyle: TextStyle(
+                                //                   color: Colors.white)),
+                                //         ),
+                                //         IconButton(
+                                //             alignment: Alignment.topCenter,
+                                //             color: Colors.red,
+                                //             icon: Icon(
+                                //               favIconBorder,
+                                //               size: 30,
+                                //             ),
+                                //             onPressed: () {
+                                //               setState(() {
+                                //                 favIconBorder = favIconFill;
+                                //               });
+                                //             }),
+                                //       ],
+                                //     ),
+                                //   ),
+                                // )
                               ],
                             ),
                           ),
                         ),
                       ));
                 },
+              )
+                ],
               );
             } else if (!snapshot.hasData) {
               return Center(

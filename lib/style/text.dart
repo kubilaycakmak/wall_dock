@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:wall_dock/style/color.dart';
 
-var titleStyle = TextStyle(color: colorYellowish, letterSpacing: 5, fontSize: 25);
-var paragStyle = TextStyle(color: colorYellowish, letterSpacing: 1, fontSize: 14);
+import 'color.dart';
+
+var titleStyle = GoogleFonts.berkshireSwash(color: colorDark, fontSize: 50, fontWeight: FontWeight.w400, fontStyle: FontStyle.italic);
+var paragStyle = GoogleFonts.berkshireSwash(color: colorDark, fontSize: 20, fontWeight: FontWeight.w400, fontStyle: FontStyle.italic);

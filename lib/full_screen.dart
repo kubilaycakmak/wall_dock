@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:photo_view/photo_view.dart';
 import 'package:wall_dock/model/api_call.dart';
 import 'package:wall_dock/style/color.dart';
 import 'package:wall_dock/style/text.dart';
+
+import 'style/color.dart';
+import 'style/color.dart';
+import 'style/color.dart';
 
 class FullScreenImage extends StatelessWidget {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
@@ -26,40 +31,12 @@ class FullScreenImage extends StatelessWidget {
         imageHeight: iheight,
         comments: comments,
       ),
-      backgroundColor: colorDark,
-      body: new SizedBox.expand(
-        child: Container(
-          color: colorTransparent,
-          child: Stack(
-            children: <Widget>[
-              new Align(
-                alignment: Alignment.center,
-                child: Hero(
-                  tag: imgPath,
-                  child: new Image.network(
-                    imgPath,
-                  ),
-                ),
-              ),
-              Align(
-                alignment: Alignment.topCenter,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    AppBar(
-                      elevation: 0.0,
-                      backgroundColor: Colors.transparent,
-                      leading: null,
-                      actions: <Widget>[],
-                    ),
-                  ],
-                ),
-              )
-            ],
-          ),
-        ),
-      ),
+      backgroundColor: colorGray,
+      body: PhotoView(
+          imageProvider: NetworkImage(imgPath),
+          basePosition: Alignment.center,
+          customSize: Size.fromHeight(900),
+        )
     );
   }
 }

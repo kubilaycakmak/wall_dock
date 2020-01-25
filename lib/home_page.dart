@@ -4,7 +4,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/material.dart';
 import 'package:wall_dock/full_screen.dart';
 import 'model/api_call.dart';
+import 'model/api_call.dart';
+import 'model/api_call.dart';
 import 'style/color.dart';
+import 'style/text.dart';
 
 const String testDevice = '';
 
@@ -26,7 +29,8 @@ class _HomePageState extends State<HomePage> {
   BannerAd _bannerAd;
   InterstitialAd _interstitialAd;
   ScrollController _scrollController = new ScrollController();
-  int per_page = 20;
+  ScrollController _scrollControllerGrid = new ScrollController();
+  int per_page = 120;
   int page_number = 1;
 
   BannerAd createBannerAd() {
@@ -53,6 +57,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    response = null;
     FirebaseAdMob.instance.initialize(appId: FirebaseAdMob.testAppId);
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
@@ -83,7 +88,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
         backgroundColor: colorGrayTransparent,
         body: FutureBuilder(
-          future: getPexelsImages(per_page, page_number, 'latest', null),
+          future: getPexelsLatestImages(per_page, page_number, null),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               print(snapshot.error);
@@ -92,25 +97,33 @@ class _HomePageState extends State<HomePage> {
                 style: TextStyle(color: Colors.white),
               );
             } else if (snapshot.hasData) {
-              return StaggeredGridView.countBuilder(
-                shrinkWrap: true,
+              return ListView(
+                shrinkWrap: false,
+                scrollDirection: Axis.vertical,
+                physics: AlwaysScrollableScrollPhysics(),
                 controller: _scrollController,
-                mainAxisSpacing: 8.0,
-                crossAxisSpacing: 8.0,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(top: 30, left: 15),
+                    child: Text('Latest', style: titleStyle,),
+                  ),
+                  StaggeredGridView.countBuilder(
+                shrinkWrap: true,
+                controller: _scrollControllerGrid,
+                mainAxisSpacing: 0.5,
+                crossAxisSpacing: 0.5,
                 staggeredTileBuilder: (index) =>
                     StaggeredTile.count(2, index.isEven ? 2 : 3),
-                padding: EdgeInsets.only(top: 150, left: 25, right: 25),
+                padding: EdgeInsets.only(top: 30, left: 0, right: 0),
                 crossAxisCount: 4,
                 itemCount: imageModel.hits.length,
                 itemBuilder: (context, index) {
                   return Material(
                       elevation: 5,
                       shadowColor: colorDark,
-                      type: MaterialType.card,
-                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                      type: MaterialType.transparency,
                       color: colorGrayTransparent,
                       child: InkWell(
-                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
                         onTap: () {
                           // _counter++;
                           // print(_counter);
@@ -144,11 +157,10 @@ class _HomePageState extends State<HomePage> {
                                 Container(
                                   height: 300.0,
                                   width: 300.0,
-                                  child: FadeInImage(
+                                  child: Image(
                                     image: NetworkImage(
                                         imageModel.hits[index].webUrl),
                                     fit: BoxFit.cover,
-                                    placeholder: AssetImage("assets/wall.gif"),
                                   ),
                                 ),
                                 Container(
@@ -166,18 +178,18 @@ class _HomePageState extends State<HomePage> {
                                             1.0
                                           ])),
                                   child: Center(
-                                      // child: Column(
-                                      //   mainAxisAlignment: MainAxisAlignment.end,
-                                      //   children: <Widget>[
-                                      //     // Text(
-                                      //     //   '@' + imageModel.hits[index].user,
-                                      //     //   style: GoogleFonts.montserrat(
-                                      //     //       fontSize: 15,
-                                      //     //       textStyle: TextStyle(
-                                      //     //           color: Colors.white)),
-                                      //     // ),
-                                      //   ],
-                                      // ),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: <Widget>[
+                                          Text(
+                                            '@' + imageModel.hits[index].user,
+                                            style: GoogleFonts.dancingScript(
+                                                fontSize: 15,
+                                                textStyle: TextStyle(
+                                                    color: Colors.white)),
+                                          ),
+                                        ],
+                                      ),
                                       ),
                                 ),
                                 // Container(
@@ -232,6 +244,8 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ));
                 },
+              )
+                ],
               );
             } else if (!snapshot.hasData) {
               return Center(
