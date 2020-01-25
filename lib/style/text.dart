@@ -4,5 +4,18 @@ import 'package:wall_dock/style/color.dart';
 
 import 'color.dart';
 
-var titleStyle = GoogleFonts.berkshireSwash(color: colorDark, fontSize: 50, fontWeight: FontWeight.w400, fontStyle: FontStyle.italic);
-var paragStyle = GoogleFonts.berkshireSwash(color: colorDark, fontSize: 20, fontWeight: FontWeight.w400, fontStyle: FontStyle.italic);
+var titleStyle = GoogleFonts.berkshireSwash(
+    color: colorDark,
+    fontSize: 50,
+    fontWeight: FontWeight.w400,
+    fontStyle: FontStyle.italic);
+var paragStyle = GoogleFonts.berkshireSwash(
+    color: colorDark,
+    fontSize: 20,
+    fontWeight: FontWeight.w400,
+    fontStyle: FontStyle.italic);
+var detailStyle = GoogleFonts.montserrat(
+    color: colorWhite,
+    fontSize: 15,
+    fontWeight: FontWeight.w400,
+    fontStyle: FontStyle.italic);

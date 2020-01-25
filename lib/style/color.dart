@@ -6,7 +6,7 @@ var colorPink = Color(0xFFFD4F99);
 var colorGray = Color(0xFFD4D4D4);
 var colorGrayTransparent = Color(0x0AA0A0A0);
 var colorWhite = Color(0xFFFFFFFF);
-var colorTransparent = Color(0xFF353535);
+var colorTransparent = Color(0x00353535);
 var colorYellowish = Color(0xFFEAFF29);
 
 var favIconBorder = Icons.favorite_border;

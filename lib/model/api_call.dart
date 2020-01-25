@@ -16,6 +16,7 @@ Future<Map> getPexelsLatestImages(int perPage, int pageNumer, _) async {
     return json.decode(response.body);
   }
 }
+
 Future<Map> getPexelsPopularImages(int perPage, int pageNumer, _) async {
   if (response == null) {
     response = await http.get(Uri.encodeFull(

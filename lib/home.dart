@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:line_icons/line_icons.dart';
 import 'package:wall_dock/category_page.dart';
 import 'package:wall_dock/favorite_page.dart';
 import 'package:wall_dock/style/text.dart';
@@ -21,33 +22,6 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   backgroundColor: colorWhite,
-      //   title: selectedItem == 0
-      //       ? Text(
-      //           "Latest",
-      //           style: GoogleFonts.montserrat(textStyle: titleStyle),
-      //         )
-      //       : selectedItem == 1
-      //           ? Text(
-      //               "Categories",
-      //               style: GoogleFonts.montserrat(textStyle: titleStyle),
-      //             )
-      //           : selectedItem == 2
-      //               ? Text(
-      //                   'Popular',
-      //                   style: GoogleFonts.montserrat(textStyle: titleStyle),
-      //                 )
-      //               : selectedItem == 3
-      //                   ? Text(
-      //                       'My Favorites',
-      //                       style:
-      //                           GoogleFonts.montserrat(textStyle: titleStyle),
-      //                     )
-      //                   : Text(''),
-      //   //title: Text('Wall Dock', style: GoogleFonts.montserrat(textStyle: titleStyle),),
-      //   centerTitle: true,
-      // ),
       backgroundColor: colorGray,
       body: Stack(children: [
         Container(
@@ -57,12 +31,12 @@ class _HomeState extends State<Home> {
       ]),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: colorGray,
-        selectedItemColor: colorWhite,
-        iconSize: 20,
+        selectedItemColor: colorDark,
+        iconSize: 28,
         currentIndex: selectedItem,
         elevation: 0,
         unselectedLabelStyle: TextStyle(color: colorWhite),
-        unselectedItemColor: colorTransparent,
+        unselectedItemColor: colorDark,
         onTap: (currentIndex) {
           setState(() {
             selectedItem = currentIndex;
@@ -70,40 +44,46 @@ class _HomeState extends State<Home> {
         },
         items: [
           BottomNavigationBarItem(
-              backgroundColor: colorGrayTransparent,
-              icon: Icon(Icons.home),
-              title: Container(
-                height: 2.0,
-                width: 5.0,
-                decoration:
-                    BoxDecoration(shape: BoxShape.circle, color: colorWhite),
-              )),
-          BottomNavigationBarItem(
-              backgroundColor: colorGrayTransparent,
-              icon: Icon(Icons.category),
-              title: Container(
-                height: 2.0,
-                width: 5.0,
-                decoration:
-                    BoxDecoration(shape: BoxShape.circle, color: colorWhite),
-              )),
-          BottomNavigationBarItem(
-              backgroundColor: colorGrayTransparent,
-              icon: Icon(Icons.text_rotation_down),
+              backgroundColor: colorGray,
+              icon: selectedItem == 0 ? Icon(Icons.home) : Icon(LineIcons.home),
               title: Container(
                 height: 5.0,
                 width: 5.0,
                 decoration:
-                    BoxDecoration(shape: BoxShape.circle, color: colorWhite),
+                    BoxDecoration(shape: BoxShape.circle, color: colorDark),
               )),
           BottomNavigationBarItem(
-              backgroundColor: colorGrayTransparent,
-              icon: Icon(Icons.favorite),
+              backgroundColor: colorGray,
+              icon: selectedItem == 1
+                  ? Icon(LineIcons.th_list)
+                  : Icon(Icons.list),
               title: Container(
                 height: 5.0,
                 width: 5.0,
                 decoration:
-                    BoxDecoration(shape: BoxShape.circle, color: colorWhite),
+                    BoxDecoration(shape: BoxShape.circle, color: colorDark),
+              )),
+          BottomNavigationBarItem(
+              backgroundColor: colorGray,
+              icon: selectedItem == 2
+                  ? Icon(Icons.star)
+                  : Icon(LineIcons.star_half_o),
+              title: Container(
+                height: 5.0,
+                width: 5.0,
+                decoration:
+                    BoxDecoration(shape: BoxShape.circle, color: colorDark),
+              )),
+          BottomNavigationBarItem(
+              backgroundColor: colorGray,
+              icon: selectedItem == 3
+                  ? Icon(Icons.favorite)
+                  : Icon(Icons.favorite_border),
+              title: Container(
+                height: 5.0,
+                width: 5.0,
+                decoration:
+                    BoxDecoration(shape: BoxShape.circle, color: colorDark),
               )),
         ],
       ),
