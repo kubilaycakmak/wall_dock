@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:wall_dock/style/text.dart';
@@ -18,35 +16,46 @@ class DetailPage extends StatefulWidget {
 
 class _DetailPageState extends State<DetailPage> {
   var response;
+  int page_number = 1, per_page = 20;
+  ScrollController _scrollController = new ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        setState(() {
+          per_page += 20;
+          if (per_page == 200) {
+            page_number++;
+          }
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    String imageUrl =
-        "https://pixabay.com/api/?key=14951209-61b2f6019e4d1a85e007275aa&category=${widget.dataCategory}";
-    Future<Map> getCategoriedImages() async {
-      if (response == null) {
-        response = await http.get(Uri.encodeFull(imageUrl));
-      }
-      if (response.statusCode == 200) {
-        return json.decode(response.body);
-      }
-    }
-
-    print(widget.dataCategory);
     return Scaffold(
+        backgroundColor: colorDark,
         appBar: AppBar(
           title: Text(
-            '${widget.dataCategory}',
+            widget.dataCategory,
             style: titleStyle,
           ),
           centerTitle: true,
           backgroundColor: colorDark,
         ),
-        backgroundColor: colorDark,
         body: FutureBuilder(
-          future: getCategoriedImages(),
+          future: getPexelsImages(
+              per_page, page_number, 'latest', widget.dataCategory),
           builder: (context, snapshot) {
-            Map data = snapshot.data;
             if (snapshot.hasError) {
               print(snapshot.error);
               return Text(
@@ -55,13 +64,14 @@ class _DetailPageState extends State<DetailPage> {
               );
             } else if (snapshot.hasData) {
               return StaggeredGridView.countBuilder(
+                controller: _scrollController,
                 mainAxisSpacing: 8.0,
                 crossAxisSpacing: 8.0,
                 staggeredTileBuilder: (index) =>
                     StaggeredTile.count(2, index.isEven ? 2 : 3),
                 padding: EdgeInsets.all(8.0),
                 crossAxisCount: 4,
-                itemCount: 19,
+                itemCount: imageModel.hits.length,
                 itemBuilder: (context, index) {
                   return Material(
                       elevation: 8.0,
@@ -71,17 +81,18 @@ class _DetailPageState extends State<DetailPage> {
                             context,
                             new MaterialPageRoute(
                                 builder: (context) => new FullScreenImage(
-                                      imageModel.hits[index].largeUrl,
-                                      imageModel.hits[index].user,
-                                      imageModel.hits[index].likes,
-                                      imageModel.hits[index].id,
-                                      imageModel.hits[index].download,
-                                      imageModel.hits[index].view,
-                                      imageModel.hits[index].size,
-                                      imageModel.hits[index].imageWidth,
-                                      imageModel.hits[index].imageHeight))),
+                                    imageModel.hits[index].largeUrl,
+                                    imageModel.hits[index].user,
+                                    imageModel.hits[index].likes,
+                                    imageModel.hits[index].id,
+                                    imageModel.hits[index].download,
+                                    imageModel.hits[index].view,
+                                    imageModel.hits[index].size,
+                                    imageModel.hits[index].iwidth,
+                                    imageModel.hits[index].iheight,
+                                    imageModel.hits[index].comments))),
                         child: Hero(
-                          tag: "${data['hits'][index]['largeImageURL']}",
+                          tag: imageModel.hits[index].webUrl,
                           child: Padding(
                             padding: EdgeInsets.symmetric(
                                 horizontal: 0, vertical: 0),
@@ -95,7 +106,7 @@ class _DetailPageState extends State<DetailPage> {
                                   ),
                                   child: FadeInImage(
                                     image: NetworkImage(
-                                        "${data['hits'][index]['largeImageURL']}"),
+                                        imageModel.hits[index].webUrl),
                                     fit: BoxFit.cover,
                                     placeholder: AssetImage("assets/wall.gif"),
                                   ),
@@ -119,8 +130,7 @@ class _DetailPageState extends State<DetailPage> {
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: <Widget>[
                                         Text(
-                                          '@' +
-                                              '${data['hits'][index]['user']}',
+                                          '@' + imageModel.hits[index].user,
                                           style: GoogleFonts.montserrat(
                                               fontSize: 15,
                                               textStyle: TextStyle(

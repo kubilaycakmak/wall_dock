@@ -18,10 +18,9 @@ class PopularPage extends StatefulWidget {
 }
 
 class _PopularPageState extends State<PopularPage> {
-var response;
-int page_number = 1;
-int per_page = 20;
-ScrollController _scrollController = new ScrollController();
+  int page_number = 1;
+  int per_page = 20;
+  ScrollController _scrollController = new ScrollController();
 
   @override
   void initState() {
@@ -33,7 +32,7 @@ ScrollController _scrollController = new ScrollController();
         setState(() {
           response = null;
           per_page += 20;
-          if(per_page == 200){
+          if (per_page == 200) {
             page_number++;
           }
         });
@@ -51,13 +50,12 @@ ScrollController _scrollController = new ScrollController();
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: colorDark,
         body: FutureBuilder(
-          future: getPexelsImages(per_page,page_number,response,'popular'),
+          future: getPexelsImages(per_page, page_number, 'popular', null),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               print(snapshot.error);
@@ -67,13 +65,14 @@ ScrollController _scrollController = new ScrollController();
               );
             } else if (snapshot.hasData) {
               return StaggeredGridView.countBuilder(
+                controller: _scrollController,
                 mainAxisSpacing: 8.0,
                 crossAxisSpacing: 8.0,
                 staggeredTileBuilder: (index) =>
                     StaggeredTile.count(2, index.isEven ? 2 : 3),
                 padding: EdgeInsets.all(8.0),
                 crossAxisCount: 4,
-                itemCount: 19,
+                itemCount: imageModel.hits.length,
                 itemBuilder: (context, index) {
                   return Material(
                       elevation: 8.0,
@@ -83,15 +82,16 @@ ScrollController _scrollController = new ScrollController();
                             context,
                             new MaterialPageRoute(
                                 builder: (context) => new FullScreenImage(
-                                      imageModel.hits[index].largeUrl,
-                                      imageModel.hits[index].user,
-                                      imageModel.hits[index].likes,
-                                      imageModel.hits[index].id,
-                                      imageModel.hits[index].download,
-                                      imageModel.hits[index].view,
-                                      imageModel.hits[index].size,
-                                      imageModel.hits[index].imageWidth,
-                                      imageModel.hits[index].imageHeight))),
+                                    imageModel.hits[index].largeUrl,
+                                    imageModel.hits[index].user,
+                                    imageModel.hits[index].likes,
+                                    imageModel.hits[index].id,
+                                    imageModel.hits[index].download,
+                                    imageModel.hits[index].view,
+                                    imageModel.hits[index].size,
+                                    imageModel.hits[index].iwidth,
+                                    imageModel.hits[index].iheight,
+                                    imageModel.hits[index].comments))),
                         child: Hero(
                           tag: imageModel.hits[index].largeUrl,
                           child: Padding(
@@ -131,8 +131,7 @@ ScrollController _scrollController = new ScrollController();
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: <Widget>[
                                         Text(
-                                          '@' +
-                                              imageModel.hits[index].user,
+                                          '@' + imageModel.hits[index].user,
                                           style: GoogleFonts.montserrat(
                                               fontSize: 15,
                                               textStyle: TextStyle(

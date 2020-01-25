@@ -3,7 +3,6 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/material.dart';
 import 'package:wall_dock/full_screen.dart';
-import 'package:wall_dock/model/image_model.dart';
 import 'model/api_call.dart';
 import 'style/color.dart';
 
@@ -15,6 +14,7 @@ class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
 }
+
 class _HomePageState extends State<HomePage> {
   static final MobileAdTargetingInfo targetingInfo = new MobileAdTargetingInfo(
     testDevices: <String>[],
@@ -27,7 +27,6 @@ class _HomePageState extends State<HomePage> {
   InterstitialAd _interstitialAd;
   ScrollController _scrollController = new ScrollController();
   int per_page = 20;
-  var response;
   int page_number = 1;
 
   BannerAd createBannerAd() {
@@ -61,7 +60,7 @@ class _HomePageState extends State<HomePage> {
         setState(() {
           response = null;
           per_page += 20;
-          if(per_page == 200){
+          if (per_page == 200) {
             page_number++;
           }
         });
@@ -82,9 +81,9 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: colorDark,
+        backgroundColor: colorGrayTransparent,
         body: FutureBuilder(
-          future: getPexelsImages(per_page, page_number, response, 'latest'),
+          future: getPexelsImages(per_page, page_number, 'latest', null),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               print(snapshot.error);
@@ -94,19 +93,24 @@ class _HomePageState extends State<HomePage> {
               );
             } else if (snapshot.hasData) {
               return StaggeredGridView.countBuilder(
+                shrinkWrap: true,
                 controller: _scrollController,
                 mainAxisSpacing: 8.0,
                 crossAxisSpacing: 8.0,
                 staggeredTileBuilder: (index) =>
                     StaggeredTile.count(2, index.isEven ? 2 : 3),
-                padding: EdgeInsets.all(8.0),
+                padding: EdgeInsets.only(top: 150, left: 25, right: 25),
                 crossAxisCount: 4,
                 itemCount: imageModel.hits.length,
                 itemBuilder: (context, index) {
                   return Material(
-                      elevation: 8.0,
-                      borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                      elevation: 5,
+                      shadowColor: colorDark,
+                      type: MaterialType.card,
+                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                      color: colorGrayTransparent,
                       child: InkWell(
+                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
                         onTap: () {
                           // _counter++;
                           // print(_counter);
@@ -126,8 +130,9 @@ class _HomePageState extends State<HomePage> {
                                       imageModel.hits[index].download,
                                       imageModel.hits[index].view,
                                       imageModel.hits[index].size,
-                                      imageModel.hits[index].imageWidth,
-                                      imageModel.hits[index].imageHeight)));
+                                      imageModel.hits[index].iwidth,
+                                      imageModel.hits[index].iheight,
+                                      imageModel.hits[index].comments)));
                         },
                         child: Hero(
                           tag: imageModel.hits[index].largeUrl,
@@ -138,10 +143,7 @@ class _HomePageState extends State<HomePage> {
                               children: <Widget>[
                                 Container(
                                   height: 300.0,
-                                  width: 300,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(0.0),
-                                  ),
+                                  width: 300.0,
                                   child: FadeInImage(
                                     image: NetworkImage(
                                         imageModel.hits[index].webUrl),
@@ -164,61 +166,66 @@ class _HomePageState extends State<HomePage> {
                                             1.0
                                           ])),
                                   child: Center(
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: <Widget>[
-                                        Text(
-                                          '@' +
-                                              imageModel.hits[index].user,
-                                          style: GoogleFonts.montserrat(
-                                              fontSize: 15,
-                                              textStyle: TextStyle(
-                                                  color: Colors.white)),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
+                                      // child: Column(
+                                      //   mainAxisAlignment: MainAxisAlignment.end,
+                                      //   children: <Widget>[
+                                      //     // Text(
+                                      //     //   '@' + imageModel.hits[index].user,
+                                      //     //   style: GoogleFonts.montserrat(
+                                      //     //       fontSize: 15,
+                                      //     //       textStyle: TextStyle(
+                                      //     //           color: Colors.white)),
+                                      //     // ),
+                                      //   ],
+                                      // ),
+                                      ),
                                 ),
-                                Container(
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      gradient: LinearGradient(
-                                          begin: FractionalOffset.bottomCenter,
-                                          end: FractionalOffset.topCenter,
-                                          colors: [
-                                            Colors.grey.withOpacity(0.0),
-                                            Colors.black87,
-                                          ],
-                                          stops: [
-                                            0.8,
-                                            1.0
-                                          ])),
-                                  child: Center(
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                                      children: <Widget>[
-                                        Text(
-                                          '♥ ' +
-                                              imageModel.hits[index].likes.toString(),
-                                          style: GoogleFonts.montserrat(
-                                              fontSize: 15,
-                                              textStyle: TextStyle(
-                                                  color: Colors.white)),
-                                        ),
-                                        IconButton(
-                                          alignment: Alignment.topCenter,
-                                          color: Colors.red,
-                                          icon: Icon(favIconBorder, size: 30,),
-                                          onPressed: (){
-                                            setState(() {
-                                              favIconBorder=favIconFill;
-                                            });
-                                          }),
-                                      ],
-                                    ),
-                                  ),
-                                )
+                                // Container(
+                                //   decoration: BoxDecoration(
+                                //       color: Colors.white,
+                                //       gradient: LinearGradient(
+                                //           begin: FractionalOffset.bottomCenter,
+                                //           end: FractionalOffset.topCenter,
+                                //           colors: [
+                                //             Colors.grey.withOpacity(0.0),
+                                //             Colors.black87,
+                                //           ],
+                                //           stops: [
+                                //             0.8,
+                                //             1.0
+                                //           ])),
+                                //   child: Center(
+                                //     child: Row(
+                                //       mainAxisAlignment:
+                                //           MainAxisAlignment.spaceBetween,
+                                //       crossAxisAlignment:
+                                //           CrossAxisAlignment.stretch,
+                                //       children: <Widget>[
+                                //         Text(
+                                //           '♥ ' +
+                                //               imageModel.hits[index].likes
+                                //                   .toString(),
+                                //           style: GoogleFonts.montserrat(
+                                //               fontSize: 15,
+                                //               textStyle: TextStyle(
+                                //                   color: Colors.white)),
+                                //         ),
+                                //         IconButton(
+                                //             alignment: Alignment.topCenter,
+                                //             color: Colors.red,
+                                //             icon: Icon(
+                                //               favIconBorder,
+                                //               size: 30,
+                                //             ),
+                                //             onPressed: () {
+                                //               setState(() {
+                                //                 favIconBorder = favIconFill;
+                                //               });
+                                //             }),
+                                //       ],
+                                //     ),
+                                //   ),
+                                // )
                               ],
                             ),
                           ),
