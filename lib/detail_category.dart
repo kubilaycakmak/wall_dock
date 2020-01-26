@@ -8,6 +8,7 @@ import 'style/color.dart';
 
 class DetailPage extends StatefulWidget {
   final String dataCategory;
+
   DetailPage({this.dataCategory});
 
   @override
@@ -15,7 +16,8 @@ class DetailPage extends StatefulWidget {
 }
 
 class _DetailPageState extends State<DetailPage> {
-  int page_number = 1, per_page = 20;
+  int page_number = 1,
+      per_page = 20;
   ScrollController _scrollController = new ScrollController();
 
   @override
@@ -76,20 +78,22 @@ class _DetailPageState extends State<DetailPage> {
                       elevation: 8.0,
                       borderRadius: BorderRadius.all(Radius.circular(8.0)),
                       child: InkWell(
-                        onTap: () => Navigator.push(
-                            context,
-                            new MaterialPageRoute(
-                                builder: (context) => new FullScreenImage(
-                                    imageModel.hits[index].largeUrl,
-                                    imageModel.hits[index].user,
-                                    imageModel.hits[index].likes,
-                                    imageModel.hits[index].id,
-                                    imageModel.hits[index].download,
-                                    imageModel.hits[index].view,
-                                    imageModel.hits[index].size,
-                                    imageModel.hits[index].iwidth,
-                                    imageModel.hits[index].iheight,
-                                    imageModel.hits[index].comments))),
+                        onTap: () =>
+                            Navigator.push(
+                                context,
+                                new MaterialPageRoute(
+                                    builder: (context) =>
+                                    new FullScreenImage(
+                                        imageModel.hits[index].largeUrl,
+                                        imageModel.hits[index].user,
+                                        imageModel.hits[index].likes,
+                                        imageModel.hits[index].id,
+                                        imageModel.hits[index].download,
+                                        imageModel.hits[index].view,
+                                        imageModel.hits[index].size,
+                                        imageModel.hits[index].iwidth,
+                                        imageModel.hits[index].iheight,
+                                        imageModel.hits[index].comments))),
                         child: Hero(
                           tag: imageModel.hits[index].webUrl,
                           child: Padding(

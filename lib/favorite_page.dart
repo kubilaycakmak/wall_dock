@@ -16,9 +16,9 @@ class _FavoritePageState extends State<FavoritePage> {
       child: Column(
         children: <Widget>[
           Padding(
-                    padding: EdgeInsets.only(top: 66, left: 5),
-                    child: Text('Favorite', style: titleStyle,),
-                  ),
+            padding: EdgeInsets.only(top: 66, left: 5),
+            child: Text('Favorite', style: titleStyle,),
+          ),
         ],
       ),
     );

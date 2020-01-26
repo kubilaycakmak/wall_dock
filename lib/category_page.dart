@@ -21,10 +21,10 @@ class _CategoryPageState extends State<CategoryPage> {
         child: ListView(
           children: <Widget>[
             Padding(
-                    padding: EdgeInsets.only(top: 30, left: 15),
-                    child: Text('Category', style: titleStyle,),
-                  ),
-                  SizedBox(height: 30,),
+              padding: EdgeInsets.only(top: 30, left: 15),
+              child: Text('Category', style: titleStyle,),
+            ),
+            SizedBox(height: 30,),
             _buildListItem("fashion", "assets/fashion.jpg"),
             _buildListItem("nature", "assets/nature.jpg"),
             _buildListItem("backgrounds", "assets/background.jpg"),
@@ -53,45 +53,48 @@ class _CategoryPageState extends State<CategoryPage> {
 
   _buildListItem(String type, String path) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0.3),
-      child: InkWell(
-            onTap: (){
+        padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0.3),
+        child: InkWell(
+            onTap: () {
               Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => DetailPage(
-                      dataCategory: type,
-                    )));
+                  builder: (context) =>
+                      DetailPage(
+                        dataCategory: type,
+                      )));
             },
             child: Stack(
-              children: <Widget>[
-                Container(
-              height: 150.0,
-              decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: AssetImage(path),
-                      fit: BoxFit.cover,
-                      colorFilter:
-                          ColorFilter.mode(Colors.black26, BlendMode.darken))),
-            ),
-          Container(
-            height: 150.0,
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Text(
-                    type,
-                    style: GoogleFonts.montserrat(
-                        fontSize: 40,
-                        fontWeight: FontWeight.bold,
-                        textStyle: TextStyle(color: Colors.white54)),
+                  Container(
+                    height: 150.0,
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: AssetImage(path),
+                            fit: BoxFit.cover,
+                            colorFilter:
+                            ColorFilter.mode(
+                                Colors.black26, BlendMode.darken))),
                   ),
-                  SizedBox(
-                    height: 20,
-                  ),
-              ],
-            )
+                  Container(
+                    height: 150.0,
+                    child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              type,
+                              style: GoogleFonts.montserrat(
+                                  fontSize: 40,
+                                  fontWeight: FontWeight.bold,
+                                  textStyle: TextStyle(color: Colors.white54)),
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                          ],
+                        )
 
-          ),
-            )])));
+                    ),
+                  )
+                ])));
   }
 }

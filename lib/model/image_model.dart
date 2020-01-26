@@ -1,5 +1,6 @@
 class ImageModel {
   ImageModel({this.hits});
+
   final List<Hits> hits;
 
   factory ImageModel.fromJson(Map<String, dynamic> value) {
@@ -12,19 +13,19 @@ class ImageModel {
 }
 
 class Hits {
-  Hits(
-      {this.largeUrl,
-      this.type,
-      this.webUrl,
-      this.user,
-      this.likes,
-      this.id,
-      this.download,
-      this.view,
-      this.size,
-      this.iwidth,
-      this.iheight,
-      this.comments});
+  Hits({this.largeUrl,
+    this.type,
+    this.webUrl,
+    this.user,
+    this.likes,
+    this.id,
+    this.download,
+    this.view,
+    this.size,
+    this.iwidth,
+    this.iheight,
+    this.comments});
+
   final String largeUrl, user, webUrl, type;
   final int likes, id, download, view, size, iwidth, iheight, comments;
 

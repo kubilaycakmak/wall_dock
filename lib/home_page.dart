@@ -34,6 +34,7 @@ class _HomePageState extends State<HomePage> {
   ScrollController _scrollControllerGrid = new ScrollController();
   int per_page = 20;
   int page_number = 1;
+
   BannerAd createBannerAd() {
     return new BannerAd(
         adUnitId: "ca-app-pub-9287966150990663/2963995877",
@@ -47,8 +48,8 @@ class _HomePageState extends State<HomePage> {
   InterstitialAd createInterStitialAd() {
     return new InterstitialAd(
         adUnitId:
-            //InterstitialAd.testAdUnitId,
-            "ca-app-pub-9287966150990663/9828787128",
+        //InterstitialAd.testAdUnitId,
+        "ca-app-pub-9287966150990663/9828787128",
         targetingInfo: targetingInfo,
         listener: (MobileAdEvent event) {
           print("Interstitial event :  + $event");
@@ -62,7 +63,7 @@ class _HomePageState extends State<HomePage> {
     FirebaseAdMob.instance.initialize(appId: FirebaseAdMob.testAppId);
     _scrollController.addListener(() {
       if (_scrollController.position.pixels.toInt() ==
-              _scrollController.position.maxScrollExtent.toInt() - 1000 ||
+          _scrollController.position.maxScrollExtent.toInt() - 1000 ||
           _scrollController.position.pixels.toInt() ==
               _scrollController.position.maxScrollExtent.toInt()) {
         setState(() {
@@ -170,7 +171,8 @@ class _HomePageState extends State<HomePage> {
                           Navigator.push(
                               context,
                               new MaterialPageRoute(
-                                  builder: (context) => new FullScreenImage(
+                                  builder: (context) =>
+                                  new FullScreenImage(
                                       imageModel.hits[index].largeUrl,
                                       imageModel.hits[index].user,
                                       imageModel.hits[index].likes,
