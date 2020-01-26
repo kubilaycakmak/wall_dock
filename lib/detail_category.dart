@@ -53,8 +53,7 @@ class _DetailPageState extends State<DetailPage> {
           backgroundColor: colorDark,
         ),
         body: FutureBuilder(
-          future: getPexelsLatestImages(
-              per_page, page_number, widget.dataCategory),
+          future: getPexelLatest(per_page, page_number, widget.dataCategory),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               print(snapshot.error);

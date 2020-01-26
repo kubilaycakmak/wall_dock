@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:wall_dock/category_page.dart';
 import 'package:wall_dock/favorite_page.dart';
-import 'package:wall_dock/style/text.dart';
+import 'package:dots_indicator/dots_indicator.dart';
 import 'home_page.dart';
-import 'popular_page.dart';
 import 'style/color.dart';
+
+var currentPosition = 0;
 
 class Home extends StatefulWidget {
   Home({Key key}) : super(key: key);
@@ -17,13 +17,31 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   var selectedItem = 0;
-  List children = [HomePage(), CategoryPage(), PopularPage(), FavoritePage()];
+  final _totalDots = 5;
+
+  final controller = PageController(viewportFraction: 0.8);
+  List children = [HomePage(), CategoryPage(), FavoritePage()];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: colorGray,
       body: Stack(children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 30, left: 180),
+          child: DotsIndicator(
+            dotsCount: 2,
+            reversed: false,
+            position: currentPosition.toDouble(),
+            axis: Axis.horizontal,
+            decorator: DotsDecorator(
+              size: const Size.square(9.0),
+              activeSize: const Size(18.0, 9.0),
+              activeShape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5.0)),
+            ),
+          ),
+        ),
         Container(
           height: 20,
         ),
@@ -49,8 +67,6 @@ class _HomeState extends State<Home> {
               title: Container(
                 height: 5.0,
                 width: 5.0,
-                decoration:
-                    BoxDecoration(shape: BoxShape.circle, color: colorDark),
               )),
           BottomNavigationBarItem(
               backgroundColor: colorGray,
@@ -60,30 +76,15 @@ class _HomeState extends State<Home> {
               title: Container(
                 height: 5.0,
                 width: 5.0,
-                decoration:
-                    BoxDecoration(shape: BoxShape.circle, color: colorDark),
               )),
           BottomNavigationBarItem(
               backgroundColor: colorGray,
               icon: selectedItem == 2
-                  ? Icon(Icons.star)
-                  : Icon(LineIcons.star_half_o),
-              title: Container(
-                height: 5.0,
-                width: 5.0,
-                decoration:
-                    BoxDecoration(shape: BoxShape.circle, color: colorDark),
-              )),
-          BottomNavigationBarItem(
-              backgroundColor: colorGray,
-              icon: selectedItem == 3
                   ? Icon(Icons.favorite)
                   : Icon(Icons.favorite_border),
               title: Container(
                 height: 5.0,
                 width: 5.0,
-                decoration:
-                    BoxDecoration(shape: BoxShape.circle, color: colorDark),
               )),
         ],
       ),
