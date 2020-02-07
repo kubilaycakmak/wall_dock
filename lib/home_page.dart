@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:extended_image/extended_image.dart';
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -48,8 +49,8 @@ class _HomePageState extends State<HomePage> {
   InterstitialAd createInterStitialAd() {
     return new InterstitialAd(
         adUnitId:
-        //InterstitialAd.testAdUnitId,
-        "ca-app-pub-9287966150990663/9828787128",
+            //InterstitialAd.testAdUnitId,
+            "ca-app-pub-9287966150990663/9828787128",
         targetingInfo: targetingInfo,
         listener: (MobileAdEvent event) {
           print("Interstitial event :  + $event");
@@ -63,7 +64,7 @@ class _HomePageState extends State<HomePage> {
     FirebaseAdMob.instance.initialize(appId: FirebaseAdMob.testAppId);
     _scrollController.addListener(() {
       if (_scrollController.position.pixels.toInt() ==
-          _scrollController.position.maxScrollExtent.toInt() - 1000 ||
+              _scrollController.position.maxScrollExtent.toInt() - 1000 ||
           _scrollController.position.pixels.toInt() ==
               _scrollController.position.maxScrollExtent.toInt()) {
         setState(() {
@@ -103,18 +104,20 @@ class _HomePageState extends State<HomePage> {
             if (val == 1) {
               setState(() {
                 currentPosition = 0;
+                response = null;
               });
             } else {
               setState(() {
                 currentPosition = 1;
+                response = null;
               });
             }
           },
           children: <Widget>[
             _buildPage("Latest", "latest",
-                getPexelLatest(per_page, page_number, null)),
-            _buildPage("Popular", "popular",
                 getPexelPopular(per_page, page_number, null)),
+            _buildPage("Popular", "popular",
+                getPexelLatest(per_page, page_number, null)),
           ],
         ));
   }
@@ -168,21 +171,21 @@ class _HomePageState extends State<HomePage> {
                           //     ..load()
                           //     ..show();
                           // }
-                          Navigator.push(
-                              context,
-                              new MaterialPageRoute(
-                                  builder: (context) =>
-                                  new FullScreenImage(
-                                      imageModel.hits[index].largeUrl,
-                                      imageModel.hits[index].user,
-                                      imageModel.hits[index].likes,
-                                      imageModel.hits[index].id,
-                                      imageModel.hits[index].download,
-                                      imageModel.hits[index].view,
-                                      imageModel.hits[index].size,
-                                      imageModel.hits[index].iwidth,
-                                      imageModel.hits[index].iheight,
-                                      imageModel.hits[index].comments)));
+                          Navigator.push(context,
+                              new MaterialPageRoute(builder: (context) {
+                            var fullScreenImage = new FullScreenImage(
+                                imgPath: imageModel.hits[index].largeUrl,
+                                user: imageModel.hits[index].user,
+                                likes: imageModel.hits[index].likes,
+                                id: imageModel.hits[index].id,
+                                download: imageModel.hits[index].download,
+                                view: imageModel.hits[index].view,
+                                size: imageModel.hits[index].size,
+                                iwidth: imageModel.hits[index].iwidth,
+                                iheight: imageModel.hits[index].iheight,
+                                comments: imageModel.hits[index].comments);
+                            return fullScreenImage;
+                          }));
                         },
                         child: Hero(
                           tag: imageModel.hits[index].largeUrl,
@@ -194,10 +197,12 @@ class _HomePageState extends State<HomePage> {
                                 Container(
                                   height: 300.0,
                                   width: 300.0,
-                                  child: Image(
-                                    image: NetworkImage(
-                                        imageModel.hits[index].webUrl),
+                                  child: ExtendedImage.network(
+                                    imageModel.hits[index].webUrl,
                                     fit: BoxFit.cover,
+                                    cache: true,
+                                    enableMemoryCache: true,
+                                    filterQuality: FilterQuality.high,
                                   ),
                                 ),
                                 Container(
@@ -239,6 +244,12 @@ class _HomePageState extends State<HomePage> {
             ],
           );
         } else if (!snapshot.hasData) {
+          return Center(
+            child: CircularProgressIndicator(
+              backgroundColor: colorTransparent,
+            ),
+          );
+        } else if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
             child: CircularProgressIndicator(
               backgroundColor: colorTransparent,
