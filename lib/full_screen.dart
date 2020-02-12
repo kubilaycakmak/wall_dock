@@ -1,17 +1,21 @@
+import 'dart:io';
 import 'dart:ui';
-
+import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:image_picker_saver/image_picker_saver.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:wall_dock/home_page.dart';
 import 'package:wall_dock/style/color.dart';
 import 'package:wall_dock/style/text.dart';
 import 'style/color.dart';
+import 'style/custom_slider.dart';
 
 class FullScreenImage extends StatefulWidget {
   FullScreenImage(
-      {this.likes,
-      this.imgPath,
+      {this.imgPath,
+      this.lowPixelImgPath,
+      this.likes,
       this.id,
       this.download,
       this.view,
@@ -21,7 +25,7 @@ class FullScreenImage extends StatefulWidget {
       this.comments,
       this.user});
 
-  String imgPath;
+  String imgPath, lowPixelImgPath;
   final int likes, id, download, view, size, iwidth, iheight, comments;
   final String user;
 
@@ -34,33 +38,53 @@ class FullScreenImage extends StatefulWidget {
 class _FullScreenImageState extends State<FullScreenImage> {
   bool showFab = true;
   PhotoViewScaleStateController scaleStateController;
-  double _sigmaX = 0.0; // from 0-10
-  double _sigmaY = 0.0; // from 0-10
-  double _opacity = 0.1; // from 0-1.0
+  double _value = 0;
+  Future<File> _imageFile;
+  static const platform = const MethodChannel('wallpaper');
+  var filePath;
+  Future<void> _getWallpaper() async {
+    try {
+      final int result =
+          await platform.invokeMethod('getWallpaper', {"text": filePath});
+    } on PlatformException catch (e) {
+      Navigator.pop(context);
+    }
+  }
 
-  void _settingModalBottomSheet(context) {
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext bc) {
-          return Container(
-            child: new Wrap(
-              children: <Widget>[],
-            ),
-          );
-        });
+  void _onImageSetWallpaper(String url) async {
+    var response = await http.get(url);
+    filePath = await ImagePickerSaver.saveFile(fileData: response.bodyBytes);
+    _getWallpaper();
+  }
+
+  void _onImageSaveButtonPressed(String path) async {
+    print("_onImageSaveButtonPressed");
+    var response = await http.get('$path');
+
+    debugPrint(response.statusCode.toString());
+
+    var filePath = await ImagePickerSaver.saveFile(
+        fileData: response.bodyBytes,
+        title: 'ImagePickerPicture',
+        description: 'example of image picker saver');
+
+    var savedFile = File.fromUri(Uri.file(filePath));
+    setState(() {
+      _imageFile = Future<File>.sync(() => savedFile);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: colorTransparent,
-          leading: Container(),
-          elevation: 0,
-        ),
+        // appBar: AppBar(
+        //   backgroundColor: colorTransparent,
+        //   leading: Container(),
+        //   elevation: 0,
+        // ),
         floatingActionButton: Align(
           alignment: Alignment.topRight,
-          heightFactor: 11.3,
+          heightFactor: 11.5,
           child: _buildFloatActionSheet(
             user: widget.user,
             likes: widget.likes,
@@ -78,88 +102,139 @@ class _FullScreenImageState extends State<FullScreenImage> {
         body: Stack(
           children: <Widget>[
             PhotoView(
+              // loadingChild: Container(
+              //   decoration: BoxDecoration(
+              //       image: DecorationImage(
+              //     image: NetworkImage(widget.lowPixelImgPath),
+              //     fit: BoxFit.cover,
+              //   )),
+              //   child: BackdropFilter(
+              //     filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+              //   ),
+              // ),
+
               backgroundDecoration: BoxDecoration(
                   color: colorDark, backgroundBlendMode: BlendMode.darken),
               imageProvider: NetworkImage(widget.imgPath),
+              filterQuality: FilterQuality.high,
               basePosition: Alignment.center,
               initialScale: PhotoViewComputedScale.contained * 1.4,
               maxScale: PhotoViewComputedScale.contained * 2,
               minScale: PhotoViewComputedScale.contained * 1,
               tightMode: false,
             ),
+            Container(
+              width: 300,
+              height: 300,
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: _value, sigmaY: _value),
+                child: Container(
+                  color: Colors.black.withOpacity(0.0),
+                ),
+              ),
+            ),
             Align(
               alignment: Alignment.bottomCenter,
               child: Container(
-                height: 100,
-                color: colorTransparent,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    Card(
-                      elevation: 1,
-                      color: colorTransparent,
-                      shape: CircleBorder(),
-                      child: IconButton(
-                        icon: Icon(
-                          LineIcons.edit,
-                          size: 30,
-                          color: colorOfIconButtons,
-                        ),
-                        onPressed: () {
-                          _settingModalBottomSheet(context);
-                        },
+                  height: 150,
+                  color: colorDarkTransparent,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          Card(
+                            elevation: 1,
+                            color: colorTransparent,
+                            shape: CircleBorder(),
+                            child: IconButton(
+                              icon: Icon(
+                                LineIcons.download,
+                                size: 30,
+                                color: colorOfIconButtons,
+                              ),
+                              onPressed: () {
+                                _onImageSaveButtonPressed(widget.imgPath);
+                              },
+                            ),
+                          ),
+                          Card(
+                            elevation: 1,
+                            color: colorTransparent,
+                            shape: CircleBorder(),
+                            child: IconButton(
+                              icon: Icon(
+                                LineIcons.picture_o,
+                                size: 30,
+                                color: colorOfIconButtons,
+                              ),
+                              onPressed: null,
+                            ),
+                          ),
+                          Card(
+                            elevation: 1,
+                            color: colorTransparent,
+                            shape: CircleBorder(),
+                            child: IconButton(
+                              icon: Icon(
+                                LineIcons.close,
+                                size: 30,
+                                color: colorOfIconButtons,
+                              ),
+                              onPressed: () {
+                                // Navigator.push(
+                                //     context,
+                                //     new MaterialPageRoute(
+                                //         builder: (BuildContext context) =>
+                                //             HomePage()));
+                                Navigator.pop(context);
+                              },
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    Card(
-                      elevation: 1,
-                      color: colorTransparent,
-                      shape: CircleBorder(),
-                      child: IconButton(
-                        icon: Icon(
-                          LineIcons.download,
-                          size: 30,
-                          color: colorOfIconButtons,
-                        ),
-                        onPressed: null,
-                      ),
-                    ),
-                    Card(
-                      elevation: 1,
-                      color: colorTransparent,
-                      shape: CircleBorder(),
-                      child: IconButton(
-                        icon: Icon(
-                          LineIcons.picture_o,
-                          size: 30,
-                          color: colorOfIconButtons,
-                        ),
-                        onPressed: null,
-                      ),
-                    ),
-                    Card(
-                      elevation: 1,
-                      color: colorTransparent,
-                      shape: CircleBorder(),
-                      child: IconButton(
-                        icon: Icon(
-                          LineIcons.close,
-                          size: 30,
-                          color: colorOfIconButtons,
-                        ),
-                        onPressed: () {
-                          // Navigator.push(
-                          //     context,
-                          //     new MaterialPageRoute(
-                          //         builder: (BuildContext context) =>
-                          //             HomePage()));
-                          Navigator.pop(context);
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            )
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Icon(
+                            Icons.blur_on,
+                            color: colorWhite,
+                            size: 30,
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          SliderTheme(
+                            data: SliderTheme.of(context).copyWith(
+                              activeTrackColor: colorGray,
+                              inactiveTrackColor: colorDarkLighter,
+                              trackHeight: 10.0,
+                              thumbColor: colorDarkLighter,
+                              thumbShape: CustomSliderThumbCircle(
+                                  thumbRadius: 20, max: 10, min: 0),
+                              overlayColor: colorYellowish,
+                              overlayShape: RoundSliderThumbShape(
+                                  disabledThumbRadius: 10,
+                                  enabledThumbRadius: 10),
+                            ),
+                            child: Slider(
+                                max: 5,
+                                value: _value,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _value = value;
+                                    print(_value.toInt());
+                                  });
+                                }),
+                          ),
+                        ],
+                      )
+                    ],
+                  )),
+            ),
           ],
         ));
   }
@@ -214,11 +289,14 @@ class __buildFloatActionSheetState extends State<_buildFloatActionSheet> {
                     builder: (context) {
                       return Container(
                         decoration: BoxDecoration(
-                            image: DecorationImage(
-                                colorFilter: ColorFilter.mode(
-                                    Colors.black38, BlendMode.modulate),
-                                image: AssetImage('assets/wallpaper.jpg'),
-                                fit: BoxFit.cover)),
+                          color: colorDarkTransparent,
+                          backgroundBlendMode: BlendMode.darken,
+                          // image: DecorationImage(
+                          //     colorFilter: ColorFilter.mode(
+                          //         Colors.black38, BlendMode.modulate),
+                          //     // image: AssetImage('assets/wallpaper.jpg'),
+                          //     fit: BoxFit.cover)),
+                        ),
                         height: 150,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,

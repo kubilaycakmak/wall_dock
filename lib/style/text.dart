@@ -16,6 +16,11 @@ var paragStyle = GoogleFonts.berkshireSwash(
     fontStyle: FontStyle.italic);
 var detailStyle = GoogleFonts.montserrat(
     color: colorWhite,
-    fontSize: 15,
+    fontSize: 13,
     fontWeight: FontWeight.w400,
     fontStyle: FontStyle.italic);
+var splashScreenStyle = GoogleFonts.montserrat(
+    color: colorDark,
+    fontSize: 30,
+    fontWeight: FontWeight.w400,
+    fontStyle: FontStyle.normal);

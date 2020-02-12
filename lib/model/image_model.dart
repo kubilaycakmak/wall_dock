@@ -1,47 +1,54 @@
-class ImageModel {
-  ImageModel({this.hits});
+// class ImageModel {
+//   ImageModel({this.hits});
 
-  final List<Hits> hits;
+//   final List<Hits> hits;
 
-  factory ImageModel.fromJson(Map<String, dynamic> value) {
-    var list = value['hits'] as List;
-    List<Hits> hitsList = list.map((i) => Hits.fromJson(i)).toList();
-    return ImageModel(
-      hits: hitsList,
-    );
-  }
-}
+//   factory ImageModel.fromJson(Map<String, dynamic> value) {
+//     var list = value['hits'] as List;
+//     List<Hits> hitsList = list.map((i) => Hits.fromJson(i)).toList();
+//     return ImageModel(
+//       hits: hitsList,
+//     );
+//   }
+// }
 
 class Hits {
-  Hits({this.largeUrl,
-    this.type,
-    this.webUrl,
-    this.user,
-    this.likes,
-    this.id,
-    this.download,
-    this.view,
-    this.size,
-    this.iwidth,
-    this.iheight,
-    this.comments});
+  Hits(
+      {this.id,
+      this.type,
+      this.tags,
+      this.previewURL,
+      this.webUrl,
+      this.largeUrl,
+      this.iwidth,
+      this.iheight,
+      this.size,
+      this.view,
+      this.download,
+      this.fav,
+      this.likes,
+      this.comments,
+      this.user});
 
-  final String largeUrl, user, webUrl, type;
-  final int likes, id, download, view, size, iwidth, iheight, comments;
+  final String largeUrl, user, webUrl, type, tags, previewURL;
+  final int likes, id, download, view, size, iwidth, iheight, comments, fav;
 
-  factory Hits.fromJson(Map<String, dynamic> value) {
+  factory Hits.fromJson(Map<dynamic, dynamic> value) {
     return Hits(
-        largeUrl: value['largeImageURL'],
-        webUrl: value['webformatURL'],
-        user: value['user'],
-        likes: value['likes'],
         id: value['id'],
-        download: value['downloads'],
-        view: value['views'],
-        size: value['imageSize'],
         type: value['type'],
+        tags: value['tags'],
+        previewURL: value['previewURL'],
+        webUrl: value['webformatURL'],
+        largeUrl: value['largeImageURL'],
         iwidth: value['imageWidth'],
         iheight: value['imageHeight'],
-        comments: value['comments']);
+        size: value['imageSize'],
+        view: value['views'],
+        download: value['downloads'],
+        fav: value['favorites'],
+        likes: value['likes'],
+        comments: value['comments'],
+        user: value['user']);
   }
 }

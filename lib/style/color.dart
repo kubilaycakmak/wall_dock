@@ -8,7 +8,7 @@ var colorGrayTransparent = Color(0x0AA0A0A0);
 var colorWhite = Color(0xFFFFFFFF);
 var colorTransparent = Color(0x00353535);
 var colorYellowish = Color(0xFFEAFF29);
-
+var colorDarkTransparent = Color(0x91161616);
 var favIconBorder = Icons.favorite_border;
 var favIconFill = Icons.favorite;
 
