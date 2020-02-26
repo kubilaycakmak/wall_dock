@@ -1,6 +1,7 @@
+import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:rxdart/rxdart.dart';
-
+import 'package:wall_dock/tools/load.dart';
 import 'model/api_call.dart';
 import 'model/image_model.dart';
 
@@ -9,6 +10,7 @@ class PhotoBloc {
   int pageNumber = 1;
   double pixels = 0.0;
   String typeOfPhoto;
+  Timer t;
 
   ReplaySubject<List<Hits>> _subject = ReplaySubject();
   final ReplaySubject<ScrollNotification> _controller = ReplaySubject();
@@ -29,13 +31,10 @@ class PhotoBloc {
   }
 
   Future<void> loadPhotos([
-    ScrollNotification notification,
+    ScrollNotification notification, BuildContext context
   ]) async {
-    print(notification.metrics.pixels);
-    print(pixels);
-    if (notification.metrics.pixels >=
-            notification.metrics.maxScrollExtent - 1000 &&
-        pixels != notification.metrics.pixels) {
+    if (notification.metrics.pixels ==
+            notification.metrics.maxScrollExtent) {
       pixels = notification.metrics.pixels;
       pageNumber++;
       List<Hits> list = await api.getPixelImage(25, pageNumber, null, 'latest');

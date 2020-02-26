@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -17,11 +18,11 @@ class EntryScreen extends StatefulWidget {
 class _EntryScreenState extends State<EntryScreen> {
   List<Hits> photos;
   List<int> maxPhotos = [];
+  PhotoBloc photoBloc;
 
   @override
   void initState() {
     super.initState();
-
     maxPhotos.addAll(List.generate(5000, (index) => index));
     photos = [];
   }
@@ -36,7 +37,7 @@ class _EntryScreenState extends State<EntryScreen> {
   Widget buildListView(
       String title, BuildContext context, AsyncSnapshot<List<Hits>> snapshot) {
     if (!snapshot.hasData) {
-      return Center(child: CircularProgressIndicator());
+      return Center(child: SpinKitWave(color: Colors.black, type: SpinKitWaveType.center),);
     }
     photos.addAll(snapshot.data);
     return ListView(
@@ -45,7 +46,7 @@ class _EntryScreenState extends State<EntryScreen> {
       physics: AlwaysScrollableScrollPhysics(),
       children: <Widget>[
         Padding(
-          padding: EdgeInsets.only(top: 30, left: 15),
+          padding: EdgeInsets.only(top: 30, left: 10),
           child: Text(
             title,
             style: titleStyle,
@@ -55,21 +56,22 @@ class _EntryScreenState extends State<EntryScreen> {
             scrollDirection: Axis.vertical,
             physics: NeverScrollableScrollPhysics(),
             shrinkWrap: true,
-            padding: EdgeInsets.only(top: 20.5, left: 0.5, right: 0.5),
+            padding: EdgeInsets.only(top: 20.5, left: 10.0, right: 10.0),
             staggeredTileBuilder: (index) =>
                 StaggeredTile.count(2, index.isEven ? 2 : 3),
             crossAxisCount: 4,
-            mainAxisSpacing: 0.5,
-            crossAxisSpacing: 0.5,
+            mainAxisSpacing: 5.0,
+            crossAxisSpacing: 5.0,
             itemCount: (maxPhotos.length > photos.length)
                 ? photos.length + 1
                 : photos.length,
             itemBuilder: (context, index) => (index == photos.length)
                 ? Container(
-                    margin: EdgeInsets.all(8),
                     child: Stack(
                       children: <Widget>[
-                        Center(),
+                        Center(
+                          child: Icon(Icons.arrow_drop_down, size: 30,),
+                        ),
                       ],
                     ))
                 : Material(
@@ -93,7 +95,7 @@ class _EntryScreenState extends State<EntryScreen> {
                         }));
                       },
                       child: Hero(
-                        tag: photos[index].largeUrl,
+                        tag: photos[index].webUrl,
                         child: Padding(
                           padding:
                               EdgeInsets.symmetric(horizontal: 1, vertical: 1),
@@ -123,7 +125,7 @@ class _EntryScreenState extends State<EntryScreen> {
                                               '@' + photos[index].user,
                                               // '@' + photos[index].user,
                                               style: GoogleFonts.montserrat(
-                                                  fontSize: 15,
+                                                  fontSize: 12,
                                                   textStyle: TextStyle(
                                                       color: colorGray,
                                                       fontWeight:
@@ -156,7 +158,16 @@ class _EntryScreenState extends State<EntryScreen> {
                         ),
                       ),
                     ),
-                  ))
+                  )),
+                  SizedBox(height: 20,),
+                  Center(
+                    child: FlatButton(
+                      onPressed: (){
+                      },
+                      child: Text('Pull Down for See More', style: TextStyle(fontSize: 25),),
+                    ),
+                  ),
+                  SizedBox(height: 20,)
       ],
     );
   }

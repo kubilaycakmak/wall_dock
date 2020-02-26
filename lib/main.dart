@@ -67,35 +67,8 @@ class _ResolutionScreenState extends State<ResolutionScreen> {
         style: splashScreenStyle,
         textAlign: TextAlign.center,
       ),
-      loadingText:
-          Text('The photos are optimizing according to the screen resolution.'),
       styleTextUnderTheLoader: paragStyle,
       navigateAfterSeconds: Home(),
     );
   }
 }
-
-// import 'package:flutter/material.dart';
-// import 'package:provider/provider.dart';
-// import 'package:wall_dock/bloc.dart';
-// import 'package:wall_dock/style/color.dart';
-
-// import 'home.dart';
-
-// void main() => runApp(WallDock());
-
-// class WallDock extends StatelessWidget {
-//   const WallDock({Key key}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Provider<PhotoBloc>(
-//       create: (context) => PhotoBloc(),
-//       dispose: (context, bloc) => bloc.dispose(),
-//       child: MaterialApp(
-//         debugShowCheckedModeBanner: false,
-//         home: Home(),
-//       ),
-//     );
-//   }
-// }
