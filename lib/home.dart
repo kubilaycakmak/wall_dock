@@ -26,21 +26,6 @@ class _HomeState extends State<Home> {
     return Scaffold(
       backgroundColor: colorGray,
       body: Stack(children: [
-        // Padding(
-        //   padding: const EdgeInsets.only(top: 30, left: 180),
-        //   child: DotsIndicator(
-        //     dotsCount: 2,
-        //     reversed: false,
-        //     position: currentPosition.toDouble(),
-        //     axis: Axis.horizontal,
-        //     decorator: DotsDecorator(
-        //       size: const Size.square(9.0),
-        //       activeSize: const Size(18.0, 9.0),
-        //       activeShape: RoundedRectangleBorder(
-        //           borderRadius: BorderRadius.circular(5.0)),
-        //     ),
-        //   ),
-        // ),
         Container(
           height: 20,
         ),
@@ -61,30 +46,26 @@ class _HomeState extends State<Home> {
         },
         items: [
           BottomNavigationBarItem(
-              backgroundColor: colorGray,
-              icon: selectedItem == 0 ? Icon(Icons.home) : Icon(LineIcons.home),
-              title: Container(
-                height: 5.0,
-                width: 5.0,
-              )),
+            activeIcon: Icon(LineIcons.home),
+            backgroundColor: colorGray,
+            icon: Icon(Icons.home),
+            title: Text(
+              'Latest'
+            )),
           BottomNavigationBarItem(
-              backgroundColor: colorGray,
-              icon: selectedItem == 1
-                  ? Icon(LineIcons.th_list)
-                  : Icon(Icons.list),
-              title: Container(
-                height: 5.0,
-                width: 5.0,
-              )),
+            activeIcon: Icon(LineIcons.th_list),
+            backgroundColor: colorGray,
+            icon: Icon(Icons.view_list),
+            title: Text(
+              'Categories'
+            )),
           BottomNavigationBarItem(
-              backgroundColor: colorGray,
-              icon: selectedItem == 2
-                  ? Icon(Icons.favorite)
-                  : Icon(Icons.favorite_border),
-              title: Container(
-                height: 5.0,
-                width: 5.0,
-              )),
+            activeIcon: Icon(Icons.favorite_border),
+            backgroundColor: colorGray,
+            icon: Icon(Icons.favorite),
+            title: Text(
+              'Favorite'
+            )),
         ],
       ),
     );

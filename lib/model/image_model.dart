@@ -1,17 +1,3 @@
-// class ImageModel {
-//   ImageModel({this.hits});
-
-//   final List<Hits> hits;
-
-//   factory ImageModel.fromJson(Map<String, dynamic> value) {
-//     var list = value['hits'] as List;
-//     List<Hits> hitsList = list.map((i) => Hits.fromJson(i)).toList();
-//     return ImageModel(
-//       hits: hitsList,
-//     );
-//   }
-// }
-
 class Hits {
   Hits(
       {this.id,

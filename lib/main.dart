@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:device_info/device_info.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:wall_dock/style/color.dart';
 import 'package:wall_dock/style/text.dart';
@@ -10,6 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:splashscreen/splashscreen.dart';
 
 void main() {
+  debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: colorTransparent,
       statusBarBrightness: Brightness.light,
@@ -44,14 +46,14 @@ class _ResolutionScreenState extends State<ResolutionScreen> {
   DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
   AndroidDeviceInfo androidInfo;
 
-  fetchDeviceInfo() async {
-    androidInfo = await deviceInfo.androidInfo;
-  }
+  // fetchDeviceInfo() async {
+  //   androidInfo = await deviceInfo.androidInfo;
+  // }
 
   @override
   void initState() {
     super.initState();
-    fetchDeviceInfo();
+    // fetchDeviceInfo();
   }
 
   @override

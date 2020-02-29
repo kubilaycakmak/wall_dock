@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:wall_dock/tools/load.dart';
 import 'model/api_call.dart';
 import 'model/image_model.dart';
 
@@ -21,7 +20,6 @@ class PhotoBloc {
   PhotoBloc() {
     _subject.addStream(Observable.fromFuture(
         api.getPixelImage(25, pageNumber, null, 'latest')));
-
     _controller.listen((event) => loadPhotos(event));
   }
 
